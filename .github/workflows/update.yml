@@ -2,10 +2,7 @@ name: Auto Data Collect
 
 on:
   schedule:
-    - cron: '13 17 * * 1-5' 
-    - cron: '17 20 * * 1-5' 
-    - cron: '43 20 * * 1-5' 
-    - cron: '11 21 * * 1-5'
+    - cron: '15 21,22,23,0 * * 1-5'
   workflow_dispatch:
 
 jobs:
@@ -13,20 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Install dependencies
-        # pytz 라이브러리 추가
         run: |
           pip install pandas yfinance pandas_market_calendars pytz
 
       - name: Run script
-        # 실행 파일명 collect.py로 변경
         run: python collect.py
 
       - name: Commit and Push changes
