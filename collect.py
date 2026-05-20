@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz
 import time
 import os
+import sys
 
 ny_tz = pytz.timezone('America/New_York')
 ny_time = datetime.now(ny_tz)
@@ -14,9 +15,17 @@ if not is_dst:
     time.sleep(3600)
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-tickers = ['QQQ', 'TQQQ', 'SOXL', 'TECL', 'SGOV']
+output_filename = os.path.join(base_dir, 'master_regular_close.csv')
+today_date = ny_time.strftime('%Y-%m-%d')
 
+if os.path.exists(output_filename):
+    existing_df = pd.read_csv(output_filename, index_col=0)
+    if today_date in existing_df.index:
+        sys.exit(0)
+
+tickers = ['QQQ', 'TQQQ', 'SOXL', 'TECL', 'SGOV']
 df_list = []
+
 for ticker in tickers:
     for attempt in range(3):
         try:
@@ -28,10 +37,9 @@ for ticker in tickers:
         except:
             time.sleep(5)
     else:
-        raise Exception(f"{ticker} 데이터 수집 3회 실패. 작업을 중단합니다.")
+        sys.exit(1)
 
 data = pd.concat(df_list, axis=1)
-
 data = data.loc['2010-01-01':]
 data = data.ffill().round(2)
 data.index = pd.to_datetime(data.index).normalize()
@@ -39,10 +47,9 @@ data.dropna(how='all', inplace=True)
 data = data[tickers]
 
 if data.iloc[-1].isnull().any():
-    raise ValueError("오늘 수집된 데이터에 결측치가 있습니다. 파일 저장을 취소합니다.")
+    sys.exit(1)
 
 nyse = mcal.get_calendar('NYSE')
-
 today = pd.Timestamp.today().normalize()
 end_date_for_cal = today + pd.Timedelta(days=100)
 
@@ -60,6 +67,4 @@ usdkrw_data = yf.download('KRW=X', period='1d', progress=False)
 current_rate = round(float(usdkrw_data['Close'].iloc[-1]), 2)
 
 data.index.name = str(current_rate)
-
-output_filename = os.path.join(base_dir, 'master_regular_close.csv')
 data.to_csv(output_filename)
