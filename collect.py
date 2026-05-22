@@ -20,7 +20,7 @@ today_date = ny_time.strftime('%Y-%m-%d')
 
 if os.path.exists(output_filename):
     existing_df = pd.read_csv(output_filename, index_col=0)
-    if today_date in existing_df.index:
+    if today_date in existing_df.index and not existing_df.loc[today_date].isnull().all():
         sys.exit(0)
 
 tickers = ['QQQ', 'TQQQ', 'SOXL', 'TECL', 'SGOV']
@@ -50,7 +50,7 @@ if data.iloc[-1].isnull().any():
     sys.exit(1)
 
 nyse = mcal.get_calendar('NYSE')
-today = pd.Timestamp.today().normalize()
+today = pd.Timestamp(ny_time.date())
 end_date_for_cal = today + pd.Timedelta(days=100)
 
 valid_days = nyse.valid_days(start_date='2010-01-01', end_date=end_date_for_cal)
