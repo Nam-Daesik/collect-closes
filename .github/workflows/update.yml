@@ -36,6 +36,3 @@ jobs:
           git add master_regular_close.csv
           git commit -m "Auto update: stock data" || echo "No changes to commit"
           git push
-
-      - name: Keep Alive
-        uses: gautamkrishnar/keepalive-workflow@v2
