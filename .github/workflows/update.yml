@@ -2,10 +2,10 @@ name: Auto Data Collect
 
 on:
   schedule:
-    - cron: '17 21 * * 1-5'
-    - cron: '17 23 * * 1-5'
-    - cron: '17 1 * * 2-6'
-    - cron: '17 3 * * 2-6'
+    - cron: '27 20 * * 1-5'
+    - cron: '27 21 * * 1-5'
+    - cron: '27 22 * * 1-5'
+    - cron: '27 23 * * 1-5'
   workflow_dispatch:
 
 env:
@@ -26,8 +26,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: |
-          pip install pandas yfinance pandas_market_calendars pytz
+        run: pip install pandas yfinance pandas_market_calendars pytz
 
       - name: Run script
         run: python collect.py
