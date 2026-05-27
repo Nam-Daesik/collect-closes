@@ -2,7 +2,10 @@ name: Auto Data Collect
 
 on:
   schedule:
-    - cron: '15 0 * * 2-6'
+    - cron: '17 21 * * 1-5'
+    - cron: '17 23 * * 1-5'
+    - cron: '17 1 * * 2-6'
+    - cron: '17 3 * * 2-6'
   workflow_dispatch:
 
 env:
