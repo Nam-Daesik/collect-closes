@@ -1,11 +1,9 @@
-name: Auto Data Collect
+name: Auto Data Collect Test
 
 on:
   schedule:
-    - cron: '27 20 * * 1-5'
-    - cron: '27 21 * * 1-5'
-    - cron: '27 22 * * 1-5'
-    - cron: '27 23 * * 1-5'
+    - cron: '5 7 * * *'  # 질문자님 가정: 한국시간 7시 5분
+    - cron: '5 22 * * *' # 실제 깃허브 기준: 한국시간 7시 5분 (UTC 22시 5분)
   workflow_dispatch:
 
 env:
@@ -14,27 +12,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: pip install pandas yfinance pandas_market_calendars pytz
-
-      - name: Run script
-        run: python collect.py
-
-      - name: Commit and Push changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add master_regular_close.csv
-          git commit -m "Auto update: stock data" || echo "No changes to commit"
-          git push
+      - name: Time Test
+        run: echo "Current UTC time is $(date -u)"
