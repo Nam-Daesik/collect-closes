@@ -1,79 +1,18 @@
-name: Auto Data Collect
-
-
+name: Cron Timezone Debugger
 
 on:
-
   schedule:
-
-    - cron: '27 20 * * 1-5'
-
-    - cron: '27 21 * * 1-5'
-
-    - cron: '27 22 * * 1-5'
-
-    - cron: '27 23 * * 1-5'
-
+    - cron: '15 * * * *'  # 매시간 15분마다 실행 테스트
   workflow_dispatch:
 
-
-
-env:
-
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-
-
 jobs:
-
-  build:
-
+  debug-time:
     runs-on: ubuntu-latest
-
-    permissions:
-
-      contents: write
-
     steps:
-
-      - name: Checkout repository
-
-        uses: actions/checkout@v4
-
-
-
-      - name: Set up Python
-
-        uses: actions/setup-python@v5
-
-        with:
-
-          python-version: '3.10'
-
-
-
-      - name: Install dependencies
-
-        run: pip install pandas yfinance pandas_market_calendars pytz
-
-
-
-      - name: Run script
-
-        run: python collect.py
-
-
-
-      - name: Commit and Push changes
-
+      - name: Print Time Debug Logs
         run: |
-
-          git config --global user.name "github-actions[bot]"
-
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add master_regular_close.csv
-
-          git commit -m "Auto update: stock data" || echo "No changes to commit"
-
-          git push
+          echo "=== GitHub Actions 스케줄러 디버그 로그 ==="
+          echo "트리거 종류: ${{ github.event_name }}"
+          echo "발동된 Cron 식: ${{ github.event.schedule }}"
+          echo "현재 UTC 시간: $(date -u)"
+          echo "현재 KST 시간 (한국): $(TZ='Asia/Seoul' date)"
